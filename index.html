@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>NYC Congestion Pricing - Residual Diagnostics</title>
+    <meta
+      name="description"
+      content="Residual diagnostics for NYC congestion pricing analysis, generated from Residuals.do."
+    >
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23237a57'/%3E%3Cpath d='M13 43h38M13 32h38M13 21h38' stroke='white' stroke-width='5' stroke-linecap='round'/%3E%3Ccircle cx='22' cy='32' r='5' fill='%23f1c64b'/%3E%3Ccircle cx='42' cy='21' r='5' fill='%23f1c64b'/%3E%3C/svg%3E"
+    >
+    <link rel="stylesheet" href="assets/site.css">
+  </head>
+  <body>
+    <div class="page-shell">
+      <aside class="toc" aria-label="Page contents">
+        <div class="toc-title">Residual Diagnostics</div>
+        <nav>
+          <a href="#overview">Overview</a>
+          <a href="#quick-viewer">Quick viewer</a>
+          <a href="#network-distance">Network distance</a>
+          <a href="#cook-cooccurrence">Cook co-occurrence</a>
+          <a href="#trip-pass-through">Trip pass-through</a>
+          <a href="#dist-x-trips">Dist x trips</a>
+        </nav>
+      </aside>
+
+      <main class="content">
+        <header id="overview" class="page-header">
+          <p class="kicker">NYC Congestion Pricing</p>
+          <h1>Residual diagnostics for pre-period trend checks</h1>
+          <div class="summary-strip" aria-label="Site summary">
+            <span>16 plots</span>
+            <span>4 spillover measures</span>
+            <span>4 residual specifications</span>
+          </div>
+        </header>
+
+        <section class="note-block">
+          <h2>Residual construction</h2>
+          <p>
+            All four specifications are estimated with PPML fixed-effect models.
+            For each model, the fitted mean is predicted as <code>mu_hat</code>,
+            and the Pearson residual is calculated as
+            <code>(accidents_total - mu_hat) / sqrt(mu_hat)</code>.
+          </p>
+          <p>
+            <strong>Base FE:</strong> zone and year-month fixed effects.
+            <strong>Unit trend:</strong> Base FE plus zone-specific linear time trends.
+            <strong>Borough-time FE:</strong> Unit trend plus borough-by-year-month fixed effects.
+            <strong>Post trend:</strong> Unit trend plus zone-specific post-treatment linear trends.
+          </p>
+          <p>
+            Residuals are then averaged by quarter and exposure group to produce
+            the diagnostic plots below.
+          </p>
+        </section>
+
+        <section class="note-block">
+          <h2>How to read the figures</h2>
+          <p>
+            Each line is the average Pearson residual for one exposure group. The
+            black horizontal line marks zero residual, and the red vertical line
+            marks the beginning of the post period at 2025q1.
+          </p>
+          <p>
+            The useful comparison is not only whether the CC zone moves after
+            treatment, but whether that movement is distinct from the outside
+            quintiles and whether it changes consistently across exposure rank.
+          </p>
+        </section>
+
+        <section id="quick-viewer" class="viewer-section">
+          <div class="section-heading">
+            <span class="section-number">1</span>
+            <div>
+              <h2>Quick viewer</h2>
+              <p>Switch between measures and model specifications without scrolling through all plots.</p>
+            </div>
+          </div>
+
+          <div class="viewer-tool" aria-live="polite">
+            <div class="control-panel">
+              <fieldset>
+                <legend>Spillover measure</legend>
+                <div class="segmented" data-control="measure">
+                  <button type="button" data-value="dis" class="active">Network distance</button>
+                  <button type="button" data-value="cook">Cook co-occurrence</button>
+                  <button type="button" data-value="trip">Trip pass-through</button>
+                  <button type="button" data-value="ditr">Dist x trips</button>
+                </div>
+              </fieldset>
+
+              <fieldset>
+                <legend>Residual specification</legend>
+                <div class="segmented" data-control="spec">
+                  <button type="button" data-value="base" class="active">Base FE</button>
+                  <button type="button" data-value="bt">Unit trend</button>
+                  <button type="button" data-value="bym">Borough-time FE</button>
+                  <button type="button" data-value="btp">Post trend</button>
+                </div>
+              </fieldset>
+            </div>
+
+            <figure class="featured-figure">
+              <figcaption>
+                <span id="featured-title">Network distance - Base FE</span>
+              </figcaption>
+              <img
+                id="featured-img"
+                src="assets/residuals/png/residuals_dis_base.png"
+                alt="Network distance residual plot, Base FE specification"
+              >
+              <p id="featured-note">
+                Baseline residuals from a model with zone and year-month fixed effects.
+              </p>
+            </figure>
+          </div>
+        </section>
+
+        <section id="network-distance" class="measure-section">
+          <div class="section-heading">
+            <span class="section-number">2</span>
+            <div>
+              <h2>Network distance</h2>
+              <p>Distance from each zone to the congestion pricing boundary. Q1 is nearest; Q5 is farthest.</p>
+            </div>
+          </div>
+          <div class="figure-grid" data-measure-grid="dis"></div>
+        </section>
+
+        <section id="cook-cooccurrence" class="measure-section">
+          <div class="section-heading">
+            <span class="section-number">3</span>
+            <div>
+              <h2>Cook co-occurrence</h2>
+              <p>Exposure based on Cook et al. style co-occurrence scores mapped to road segments and zones.</p>
+            </div>
+          </div>
+          <div class="figure-grid" data-measure-grid="cook"></div>
+        </section>
+
+        <section id="trip-pass-through" class="measure-section">
+          <div class="section-heading">
+            <span class="section-number">4</span>
+            <div>
+              <h2>Trip pass-through</h2>
+              <p>Exposure based on routed taxi trips passing through each zone on paths linked to the CBD.</p>
+            </div>
+          </div>
+          <div class="figure-grid" data-measure-grid="trip"></div>
+        </section>
+
+        <section id="dist-x-trips" class="measure-section">
+          <div class="section-heading">
+            <span class="section-number">5</span>
+            <div>
+              <h2>Dist x trips</h2>
+              <p>A distance-anchored exposure index adjusted by observed CBD-linked taxi trip share.</p>
+            </div>
+          </div>
+          <div class="figure-grid" data-measure-grid="ditr"></div>
+        </section>
+      </main>
+    </div>
+
+    <script src="assets/site.js"></script>
+  </body>
+</html>
