@@ -1,3 +1,3 @@
-# NYC Congestion Pricing Residual Diagnostics
+# NYC Congestion Pricing Accident Impact Evaluation
 
-This folder is a static GitHub Pages site for the residual plots.
+This repository contains a static GitHub Pages site for NYC congestion pricing accident analysis figures.
